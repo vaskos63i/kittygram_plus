@@ -13,6 +13,14 @@ class AchievementSerializer(serializers.ModelSerializer):
         fields = ('id', 'achievement_name')
 
 
+class CatListSerializer(serializers.ModelSerializer):
+    color = serializers.ChoiceField(choices=CHOICES)
+
+    class Meta:
+        model = Cat
+        fields = ('id', 'name', 'color')
+
+
 class CatSerializer(serializers.ModelSerializer):
     # owner = serializers.StringRelatedField(read_only=True)
     achievements = AchievementSerializer(many=True, required=False)
@@ -21,10 +29,12 @@ class CatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cat
-        fields = ('id', 'name', 'color', 'birth_year', 'owner', 'achievements', 'age')
+        fields = (
+            'id', 'name', 'color', 'birth_year', 'owner', 'achievements', 'age'
+        )
 
     def get_age(self, obj):
-        return dt.datetime.now().year - obj.birth_year        
+        return dt.datetime.now().year - obj.birth_year
 
     def create(self, validated_data):
         if 'achievements' not in self.initial_data:
